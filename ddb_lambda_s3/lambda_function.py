@@ -1,7 +1,11 @@
 import json
+import uuid
+import boto3
+
 
 def lambda_handler(event, context):
     # TODO implement
+    s3 = boto3.client('s3')    
     
     print(event)
     
@@ -19,5 +23,8 @@ def lambda_handler(event, context):
                 pass
             
         songs.append(' '.join(song))
+    
+    for song in songs:
+        s3.put_object(Body=song, Bucket='zali-gold-song-bucket', Key=str(uuid.uuid4()) + '.txt')
     
     print(songs)

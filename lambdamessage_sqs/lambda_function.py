@@ -1,19 +1,26 @@
 import json
 import boto3
-from datetime import datetime
+import dateutil
+
+from datetime import datetime, timezone
 
 
-def lambda_handler(event, context):  # required
-    now = datetime.now()
-    current_time = now.strftime("%H:%M:%S %p")
+def lambda_handler(event, context):
+    # setting sqs as the resource
+    sqs = boto3.resource('sqs')
+    # obtain date and time in Pacific Standard Time
+    local = datetime.now(dateutil.tz.gettz('US/Pacific'))
+    # local time
+    time = local.strftime('%I:%M%p on %B %d, %Y')
+    # enter the URL of queue
+    queue = sqs.Queue(
+        url='https://sqs.us-west-2.amazonaws.com/026023833752/KingSQS_Time')
 
-    sqs = boto3.client('sqs')  # client is required to interact with
-    sqs.send_message(
-        QueueUrl="https://sqs.us-west-2.amazonaws.com/026023833752/KingSQS_Time",
-        MessageBody=current_time
-    )
+    # will send a message to queue with current time and date in PST
+    queue.send_message(MessageBody=time)
 
+    # TODO implement
     return {
         'statusCode': 200,
-        'body': json.dumps(current_time)
-    }
+        # output will be local time
+        'body': json.dumps(local.strftime('%I:%M%p on %B %d, %Y'), default=str)

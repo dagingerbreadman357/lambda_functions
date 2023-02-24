@@ -19,7 +19,6 @@ def lambda_handler(event, context):
     # will send a message to queue with current time and date in PST
     queue.send_message(MessageBody=time)
 
-    # TODO implement
     return {
         'statusCode': 200,
         # output will be local time

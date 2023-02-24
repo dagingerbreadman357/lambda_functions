@@ -23,4 +23,4 @@ def lambda_handler(event, context):
     return {
         'statusCode': 200,
         # output will be local time
-        'body': json.dumps(local.strftime('%I:%M%p on %B %d, %Y'), default=str)
+        'body': json.dumps(local.strftime('%I:%M%p on %B %d, %Y'), default=str)}
